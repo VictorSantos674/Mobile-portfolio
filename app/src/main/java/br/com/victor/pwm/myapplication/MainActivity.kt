@@ -11,16 +11,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,9 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
-import br.com.victor.pwm.myapplication.R.drawable.java_script
+import br.com.victor.pwm.myapplication.R.drawable.*
 import br.com.victor.pwm.myapplication.ui.theme.MyApplicationTheme
-import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,80 +68,36 @@ fun BottomNavigationBar(navController: NavHostController) {
         NavigationItem.Projects,
         NavigationItem.AboutMe
     )
-    BottomNavigation(
-        backgroundColor = Color(0xFF028090),
+
+    NavigationBar(
+        containerColor = Color(0xFF028090),
         contentColor = Color.White
     ) {
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
         items.forEach { item ->
-            BottomNavigationItem(
+            NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(item.title) },
                 selected = currentRoute == item.route,
                 onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
+                    // Evita navegações repetidas para a mesma rota
+                    if (currentRoute != item.route) {
+                        navController.navigate(item.route) {
+                            // Mantém o estado ao navegar para um novo destino
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            // Evita criar várias instâncias do mesmo destino
+                            launchSingleTop = true
+                            // Restaura o estado se estiver disponível
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
                 }
             )
         }
     }
-}
-
-@Composable
-fun BottomNavigationItem(
-    icon: @Composable () -> Unit,
-    label: @Composable () -> Unit,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    NavigationBarItem(
-        icon = icon,
-        label = label,
-        selected = selected,
-        onClick = onClick,
-        alwaysShowLabel = true,
-        colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = Color.White,
-            selectedTextColor = Color.White,
-            indicatorColor = Color(0xFF114B5F),
-            unselectedIconColor = Color.White.copy(0.7f),
-            unselectedTextColor = Color.White.copy(0.7f)
-        )
-    )
-}
-
-@Composable
-fun NavigationBarItem(
-    icon: @Composable () -> Unit,
-    label: @Composable () -> Unit,
-    selected: Boolean,
-    onClick: () -> Unit,
-    alwaysShowLabel: Boolean,
-    colors: NavigationBarItemColors
-) {
-
-
-}
-
-@Composable
-fun BottomNavigation(
-    backgroundColor: Color,
-    contentColor: Color,
-    content: @Composable () -> Unit
-) {
-    NavigationBar(
-        containerColor = backgroundColor,
-        contentColor = contentColor,
-        content = content
-    )
-}
-
-fun NavigationBar(containerColor: Color, contentColor: Color, content: @Composable () -> Unit) {
 }
 
 @Composable
@@ -178,7 +131,6 @@ fun Home() {
             )
         }
         item {
-            // Adicionando a minha foto
             Image(
                 painter = painterResource(id = R.drawable.profile_picture),
                 contentDescription = "Profile Picture",
@@ -188,7 +140,6 @@ fun Home() {
             )
         }
         item {
-            // Seção "Sobre mim"
             Text(
                 text = "Sobre mim:",
                 style = TextStyle(
@@ -208,13 +159,7 @@ fun Home() {
                 modifier = Modifier.padding(vertical = 8.dp)
             )
         }
-
         item {
-
-        }
-
-        item {
-            // Seção "Contatos"
             Text(
                 text = "Contatos:",
                 style = TextStyle(
@@ -259,8 +204,8 @@ fun AboutMe() {
         }
         item {
             Text(
-                    text = "Victor Souza Santos, estudante de Ciência da Computação, com estágio no Tribunal de Justiça de Pernambuco em 2023. Busco oportunidades em Desenvolvimento de Software, valorizando inovação e crescimento profissional. Interessado em novas tecnologias e soluções que transformem a sociedade.",
-                    style = TextStyle(
+                text = "Victor Souza Santos, estudante de Ciência da Computação, com estágio no Tribunal de Justiça de Pernambuco em 2023. Busco oportunidades em Desenvolvimento de Software, valorizando inovação e crescimento profissional. Interessado em novas tecnologias e soluções que transformem a sociedade.",
+                style = TextStyle(
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
@@ -281,7 +226,6 @@ fun Projects() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            // Seção "Projetos"
             Text(
                 text = "Projetos:",
                 style = TextStyle(
@@ -302,91 +246,53 @@ fun Projects() {
                 ),
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-        }
-        
-        //Portfolio - Web
-        item {
-            Text(
-                text = "Portfolio - Web"
-                style = TextStyle(
-                    color = Color(0xFF028090),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
+            projectItem(
+                title = "Portfolio - Web",
+                imageRes = R.drawable.portfolio_web,
+                url = "https://portfolio2024-five-chi.vercel.app/"
+            )
+            projectItem(
+                title = "GitPlus",
+                imageRes = R.drawable.gitplus,
+                url = "https://projeto-web-streaming.vercel.app/"
+            )
+            projectItem(
+                title = "Educa Livros Online",
+                imageRes = R.drawable.educa_livros_online,
+                url = "https://bd-logical-physical.vercel.app/"
             )
         }
-        item {
-            Image(){
-                painter = painterResource(id = R.drawable.portfolio_web),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(350.dp)
-                    .clickable {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://portfolio2024-five-chi.vercel.app/")
-                        )
-                        context.startActivity(intent)
-                    }
-            }
-        }
-        
-        //GitPlus
-        item {
-            Text(
-                text = "GitPlus",
-                style = TextStyle(
-                    color = Color(0xFF028090),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-        item {
-            Image(){
-                painter = painterResource(id = R.drawable.gitplus),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(350.dp)
-                    .clickable {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://projeto-web-streaming.vercel.app/")
-                        )
-                        context.startActivity(intent)
-                    }
-            }
-        }
-        
-        //Educa Livros Online
-        item {
-            Text(
-                text = "Educa Livros Online",
-                style = TextStyle(
-                    color = Color(0xFF028090),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-        item {
-            Image(){
-                painter = painterResource(id = R.drawable.educa_livros_online),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(350.dp)
-                    .clickable {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://bd-logical-physical.vercel.app/")
-                        )
-                        context.startActivity(intent)
-                    }
-            }
-        }
+
+    }
+}
+
+@Composable
+fun projectItem(title: String, imageRes: Int, url: String) {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = title,
+            style = TextStyle(
+                color = Color(0xFF028090),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = null,
+            modifier = Modifier
+                .size(350.dp)
+                .clickable {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(intent)
+                }
+        )
     }
 }
 
@@ -409,161 +315,41 @@ fun Skills() {
                 ),
                 modifier = Modifier.padding(vertical = 16.dp)
             )
-        }
 
-        //Java
-        item {
-            Image(
-                painter = painterResource(id = R.drawable.java),
-                contentDescription = "Java",
-                modifier = Modifier
-                    .size(128.dp)
-                    .padding(16.dp)
-            )
+            SkillItem(imageRes = R.drawable.java, skillDescription = "Java - avançado")
+            SkillItem(imageRes = R.drawable.kotlin, skillDescription = "Kotlin - básico")
+            SkillItem(imageRes = R.drawable.html, skillDescription = "HTML5 - intermediário")
+            SkillItem(imageRes = R.drawable.css, skillDescription = "CSS3 - intermediário")
+            SkillItem(imageRes = R.drawable.java_script, skillDescription = "JavaScript - intermediário")
+            SkillItem(imageRes = R.drawable.excel, skillDescription = "Excel - avançado")
+            SkillItem(imageRes = R.drawable.python, skillDescription = "Python - básico")
         }
-        item {
-            Text(
-                text = "Java - avançado",
-                style = TextStyle(
-                    color = Color(0xFF456990),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
+    }
+}
 
-        //Kotlin
-        item {
-            Image(
-                painter = painterResource(id = R.drawable.kotlin),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .padding(16.dp)
-            )
-        }
-        item {
-            Text(
-                text = "Kotlin - básico",
-                style = TextStyle(
-                    color = Color(0xFF456990),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-
-        //HTML5
-        item {
-            Image(
-                painter = painterResource(id = R.drawable.html),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .padding(16.dp)
-            )
-        }
-        item {
-            Text(
-                text = "HTML5 - intermediário",
-                style = TextStyle(
-                    color = Color(0xFF456990),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-
-        //CSS3
-        item {
-            Image(
-                painter = painterResource(id = R.drawable.css),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .padding(16.dp)
-            )
-        }
-        item {
-            Text(
-                text = "CSS3 - intermediário",
-                style = TextStyle(
-                    color = Color(0xFF456990),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-
-        //JavaScript
-        item {
-            Image(
-                painter = painterResource(id = java_script),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .padding(16.dp)
-            )
-        }
-        item {
-            Text(
-                text = "JavaScript - intermediário",
-                style = TextStyle(
-                    color = Color(0xFF456990),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-
-        //Excel
-        item {
-            Image(
-                painter = painterResource(id = R.drawable.excel),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .padding(16.dp)
-            )
-        }
-        item {
-            Text(
-                text = "Excel - avançado",
-                style = TextStyle(
-                    color = Color(0xFF456990),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-
-        //Python
-        item {
-            Image(
-                painter = painterResource(id = R.drawable.python),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .padding(16.dp)
-            )
-        }
-        item {
-            Text(
-                text = "Python - básico",
-                style = TextStyle(
-                    color = Color(0xFF456990),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
+@Composable
+fun SkillItem(imageRes: Int, skillDescription: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = null,
+            modifier = Modifier
+                .size(128.dp)
+                .padding(16.dp)
+        )
+        Text(
+            text = skillDescription,
+            style = TextStyle(
+                color = Color(0xFF456990),
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
     }
 }
 
