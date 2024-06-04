@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -111,6 +112,7 @@ fun Navigation(navController: NavHostController) {
 
 @Composable
 fun Home() {
+    val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
             .background(color = Color(0xFF114B5F))
@@ -168,16 +170,55 @@ fun Home() {
                 ),
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            Text(
-                text = "Email: 3.victorsouza@gmail.com\n\nLinkedIn: https://www.linkedin.com/in/victor-santos-59a886220/\n\nGitHub: github.com/seuperfil",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
+            Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                ClickableLink(
+                    label = "Email: ",
+                    value = "3.victorsouza@gmail.com",
+                    url = "mailto:3.victorsouza@gmail.com"
+                )
+                ClickableLink(
+                    label = "LinkedIn: ",
+                    value = "https://www.linkedin.com/in/victor-santos-59a886220/",
+                    url = "https://www.linkedin.com/in/victor-santos-59a886220/"
+                )
+                ClickableLink(
+                    label = "GitHub: ",
+                    value = "https://github.com/VictorSantos674",
+                    url = "https://github.com/VictorSantos674"
+                )
+            }
         }
+    }
+}
+
+@Composable
+fun ClickableLink(label: String, value: String, url: String) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                context.startActivity(intent)
+            }
+    ) {
+        Text(
+            text = label,
+            style = TextStyle(
+                color = Color(0xFF028090),
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
+        Text(
+            text = value,
+            style = TextStyle(
+                color = Color.White,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                textDecoration = TextDecoration.Underline
+            )
+        )
     }
 }
 
@@ -258,7 +299,7 @@ fun Projects() {
             projectItem(
                 title = "Educa Livros Online",
                 imageRes = R.drawable.educa_livros_online,
-                url = "https://bd-logical-physical.vercel.app/"
+                url = "https://github.com/RianDelou/bd-logical-physical"
             )
         }
     }
