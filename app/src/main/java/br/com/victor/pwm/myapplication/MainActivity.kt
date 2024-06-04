@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
-import br.com.victor.pwm.myapplication.R.drawable.*
 import br.com.victor.pwm.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -116,7 +115,7 @@ fun Home() {
         modifier = Modifier
             .background(color = Color(0xFF114B5F))
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
@@ -135,7 +134,7 @@ fun Home() {
                 painter = painterResource(id = R.drawable.profile_picture),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
-                    .size(128.dp)
+                    .size(256.dp)
                     .padding(16.dp)
             )
         }
@@ -150,7 +149,7 @@ fun Home() {
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             Text(
-                text = "Me chamo Victor Souza Santos e sou estudante de Ciência da Computação",
+                text = "Me chamo Victor Souza Santos e sou um estudante de Ciência da Computação",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 20.sp,
@@ -163,14 +162,14 @@ fun Home() {
             Text(
                 text = "Contatos:",
                 style = TextStyle(
-                    color = Color.White,
+                    color = Color(0xFF028090),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
                 ),
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             Text(
-                text = "Email: 3.victorsouza@gmail.com\nLinkedIn: https://www.linkedin.com/in/victor-santos-59a886220/\nGitHub: github.com/seuperfil",
+                text = "Email: 3.victorsouza@gmail.com\n\nLinkedIn: https://www.linkedin.com/in/victor-santos-59a886220/\n\nGitHub: github.com/seuperfil",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 25.sp,
@@ -188,8 +187,8 @@ fun AboutMe() {
         modifier = Modifier
             .background(color = Color(0xFF114B5F))
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
     ) {
         item {
             Text(
@@ -208,9 +207,9 @@ fun AboutMe() {
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 ),
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
             )
         }
     }
@@ -222,8 +221,8 @@ fun Projects() {
         modifier = Modifier
             .background(color = Color(0xFF114B5F))
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
     ) {
         item {
             Text(
@@ -233,7 +232,7 @@ fun Projects() {
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
             )
         }
         item {
@@ -244,7 +243,7 @@ fun Projects() {
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
             )
             projectItem(
                 title = "Portfolio - Web",
@@ -262,7 +261,6 @@ fun Projects() {
                 url = "https://bd-logical-physical.vercel.app/"
             )
         }
-
     }
 }
 
@@ -302,8 +300,8 @@ fun Skills() {
         modifier = Modifier
             .background(color = Color(0xFF114B5F))
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
     ) {
         item {
             Text(
@@ -313,7 +311,7 @@ fun Skills() {
                     fontSize = 36.sp,
                     fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.padding(vertical = 16.dp)
+                modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
             )
 
             SkillItem(imageRes = R.drawable.java, skillDescription = "Java - avançado")
@@ -331,8 +329,10 @@ fun Skills() {
 fun SkillItem(imageRes: Int, skillDescription: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(8.dp)
+        horizontalArrangement = Arrangement.Start,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
         Image(
             painter = painterResource(id = imageRes),
@@ -348,7 +348,7 @@ fun SkillItem(imageRes: Int, skillDescription: String) {
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold
             ),
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
         )
     }
 }
